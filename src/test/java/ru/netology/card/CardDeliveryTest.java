@@ -186,7 +186,7 @@ public class CardDeliveryTest {
     void validCalendarTest() {
         $("[data-test-id=city] input").setValue("Москва");
         $("[data-test-id=date] button").click();
-        if (!getDate(20,"dd.MM").equals(getDate(3, "dd.MM"))) {
+        if (!getDate(20,"MM").equals(getDate(3, "MM"))) {
             $$(".calendar__arrow_direction_right").findBy(attribute("data-step", "1")).click();
             $$(".calendar__day").find(exactText(getDate(20, "d"))).click();
         } else {
