@@ -12,11 +12,10 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static com.codeborne.selenide.Condition.exactText;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
-public class cardDeliveryTest {
+public class CardDeliveryTest {
     private String getDate(int addDay, String pattern) {
         LocalDate date = LocalDate.now();
         LocalDate futureDate = date.plusDays(addDay);
@@ -174,7 +173,6 @@ public class cardDeliveryTest {
     @Test
     void notValidMenuCityTest() {
         $("[data-test-id=city] input").setValue("Mo");
-//        $(".menu").shouldBe(invisible);
         $("[data-test-id=date] input").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[data-test-id=date] input").setValue(getDate(7, "dd.MM.yyyy"));
         $("[data-test-id=name] input").setValue("Иван Иванович");
@@ -188,13 +186,18 @@ public class cardDeliveryTest {
     void validCalendarTest() {
         $("[data-test-id=city] input").setValue("Москва");
         $("[data-test-id=date] button").click();
-        $$(".calendar__day").find(exactText(getDate(7, "d"))).click();
+        if (!getDate(20,"dd.MM").equals(getDate(3, "dd.MM"))) {
+            $$(".calendar__arrow_direction_right").findBy(attribute("data-step", "1")).click();
+            $$(".calendar__day").find(exactText(getDate(20, "d"))).click();
+        } else {
+            $$(".calendar__day").find(exactText(getDate(7, "d"))).click();
+        }
         $("[data-test-id=name] input").setValue("Иван Иванович");
         $("[data-test-id=phone] input").setValue("+71234567890");
         $("[data-test-id=agreement]").click();
         $("button.button").click();
         $("[data-test-id=notification]").shouldBe(visible, Duration.ofSeconds(13));
         $("[data-test-id=notification] .notification__title").shouldHave(exactText("Успешно!"));
-        $("[data-test-id=notification] .notification__content").shouldHave(exactText("Встреча успешно забронирована на " + getDate(7, "dd.MM.yyyy")));
+        $("[data-test-id=notification] .notification__content").shouldHave(exactText("Встреча успешно забронирована на " + getDate(20, "dd.MM.yyyy")));
     }
 }
